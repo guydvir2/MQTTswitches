@@ -2,19 +2,18 @@ from sys import path
 import datetime
 from time import sleep
 
-# Linux
-# mod_path = '/home/guy/github/modules'
-# main_path = '/home/guy/github/RemoteSwitch'
-#
+try:
+    # Linux
+    mod_path = '/home/guy/github/modules'
+    path.append(mod_path)
+    import scheduler
 
-# MAC
-mod_path = '/Users/guy/github/modules'
-main_path = '/Users/guy/github/RemoteSwitch'
-#
+except ModuleNotFoundError:
+    # MAC
+    mod_path = '/Users/guy/github/modules'
+    path.append(mod_path)
+    import scheduler
 
-path.append(mod_path)
-
-import scheduler
 from mqtt_switch import MQTTClient
 from jReader import SchedReader
 
@@ -46,12 +45,12 @@ class MQTTRemoteSchedule:
 
     # MQTT section
     def start_mqtt_service(self, device_name, qos, password, username):
-        self.mqtt_agent = MQTTClient(sid=device_name, topics=self.pub_topics, topic_qos=qos, host=self.broker)
+        self.mqtt_agent = MQTTClient(sid=device_name, topics=self.pub_topics, topic_qos=qos, host=self.broker,
+                                     password=password, username=username)
         self.mqtt_agent.call_externalf = lambda: self.mqtt_commands(self.mqtt_agent.arrived_msg)
         self.mqtt_agent.start()
         sleep(1)
-
-        # self.pub_msg(msg_topic=self.msg_topic, msg='Schedule is active')
+        self.pub_msg(msg_topic=self.msg_topic, msg='Schedule is active')
 
     def mqtt_commands(self, msg):
         msg_codes = ['0', '1', '2', '3']
@@ -152,9 +151,8 @@ class MQTTRemoteSchedule:
 
 
 topic_prefix = 'HomePi/Dvir/Windows/'
-Home_Devices = ['pRoomWindow', 'fRoomWindow']
+Home_Devices = ['pRoomWindow', 'fRoomWindow', 'kRoomWindow']
 Home_Devices = [topic_prefix + device for device in Home_Devices]
 for client in Home_Devices:
-
-    MQTTRemoteSchedule(broker='192.168.2.113', master_topic=client, pub_topics='HomePi/Dvir/Schedules',
-                       msg_topic='HomePi/Dvir/Messages')
+    MQTTRemoteSchedule(broker='192.168.2.200', master_topic=client, pub_topics='HomePi/Dvir/Schedules',
+                       msg_topic='HomePi/Dvir/Messages', username='guy', password='kupelu9e')
