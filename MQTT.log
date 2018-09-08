@@ -1,0 +1,58 @@
+[2018-09-08 11:26:09.1] >>Log file /home/guy/github/SmartHome_SoC/MQTTswitches/MQTT.log was created successfully
+[2018-09-08 11:26:09.1] ************ Connect to following topics ************
+[2018-09-08 11:26:09.1] HomePi/Dvir/Windows/All
+[2018-09-08 11:26:09.1] HomePi/Dvir/Messages
+[2018-09-08 11:26:09.2] *****************************************************
+[2018-09-08 11:26:09.2] >> Connecting to MQTT mqtt_server 192.168.2.200: 0
+[2018-09-08 11:26:09.2] >> Subscribe topic: HomePi/Dvir/Windows/All
+[2018-09-08 11:26:09.2] >> Subscribe topic: HomePi/Dvir/Messages
+[2018-09-08 11:27:58.0] [2018-09-08 11:27:58.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [UP]
+[2018-09-08 11:27:58.6] [2018-09-08 11:27:59.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 11:27:59.3] [2018-09-08 11:27:59.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [DOWN]
+[2018-09-08 11:28:00.1] [2018-09-08 11:28:00.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 11:28:00.6] [2018-09-08 11:28:01.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [UP]
+[2018-09-08 11:28:01.4] [2018-09-08 11:28:01.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 11:28:02.1] [2018-09-08 11:28:02.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [DOWN]
+[2018-09-08 11:28:03.4] [2018-09-08 11:28:03.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 11:30:28.6] ************ Connect to following topics ************
+[2018-09-08 11:30:28.6] HomePi/Dvir/Windows/All
+[2018-09-08 11:30:28.6] HomePi/Dvir/Messages
+[2018-09-08 11:30:28.6] *****************************************************
+[2018-09-08 11:30:28.8] >> Connecting to MQTT mqtt_server 192.168.2.200: 0
+[2018-09-08 11:30:28.8] >> Subscribe topic: HomePi/Dvir/Windows/All
+[2018-09-08 11:30:28.8] >> Subscribe topic: HomePi/Dvir/Messages
+[2018-09-08 11:34:03.7] ************ Connect to following topics ************
+[2018-09-08 11:34:03.7] HomePi/Dvir/Windows/All
+[2018-09-08 11:34:03.7] HomePi/Dvir/Messages
+[2018-09-08 11:34:03.7] *****************************************************
+[2018-09-08 11:34:03.7] >> Connecting to MQTT mqtt_server 192.168.2.200: 0
+[2018-09-08 11:34:03.7] >> Subscribe topic: HomePi/Dvir/Windows/All
+[2018-09-08 11:34:03.7] >> Subscribe topic: HomePi/Dvir/Messages
+[2018-09-08 11:36:13.5] ************ Connect to following topics ************
+[2018-09-08 11:36:13.5] HomePi/Dvir/Windows/All
+[2018-09-08 11:36:13.5] HomePi/Dvir/Messages
+[2018-09-08 11:36:13.5] *****************************************************
+[2018-09-08 11:36:13.7] >> Connecting to MQTT mqtt_server 192.168.2.200: 0
+[2018-09-08 11:36:13.7] >> Subscribe topic: HomePi/Dvir/Windows/All
+[2018-09-08 11:36:13.7] >> Subscribe topic: HomePi/Dvir/Messages
+[2018-09-08 11:58:43.4] [2018-09-08 11:58:43.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [DOWN]
+[2018-09-08 11:58:44.5] [2018-09-08 11:58:45.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 11:58:45.4] [2018-09-08 11:58:45.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [UP]
+[2018-09-08 11:58:52.7] [2018-09-08 11:58:53.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [DOWN]
+[2018-09-08 11:58:53.4] [2018-09-08 11:58:53.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 13:18:03.1] [2018-09-08 13:18:03.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [DOWN]
+[2018-09-08 15:17:44.2] [2018-09-08 15:17:43.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:17:44.5] [2018-09-08 15:17:44.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [UP]
+[2018-09-08 15:17:46.4] [2018-09-08 15:17:46.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:17:47.0] [2018-09-08 15:17:46.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [DOWN]
+[2018-09-08 15:17:47.9] [2018-09-08 15:17:47.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:18:50.4] [2018-09-08 15:18:50.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:18:50.4] [2018-09-08 15:18:51.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [UP]
+[2018-09-08 15:18:52.3] [2018-09-08 15:18:53.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:19:36.2] [2018-09-08 15:19:36.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:20:03.6] [2018-09-08 15:20:03.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:20:55.0] [2018-09-08 15:20:55.05] Topic: [HomePi/Dvir/Windows/fRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:24:33.1] [2018-09-08 15:24:32.05] Topic: [HomePi/Dvir/Windows/pRoomWindow] Message: Button Switch: [OFF]
+[2018-09-08 15:28:28.8] >> Connecting to MQTT mqtt_server 192.168.2.200: 0
+[2018-09-08 15:28:28.8] >> Subscribe topic: HomePi/Dvir/Windows/All
+[2018-09-08 15:28:28.8] >> Subscribe topic: HomePi/Dvir/Messages
