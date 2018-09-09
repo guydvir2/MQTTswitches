@@ -1,20 +1,16 @@
-import sys
-additional_path=[ '/home/guy/github/SmartHome_SoC/MQTTswitches', '/usr/lib/python35.zip', '/usr/lib/python3.5', '/usr/lib/python3.5/plat-arm-linux-gnueabihf', '/usr/lib/python3.5/lib-dynload', '/home/guy/.local/lib/python3.5/site-packages', '/usr/local/lib/python3.5/dist-packages', '/usr/lib/python3/dist-packages']
-
-additional_path2=[ '/usr/lib/python3.5', '/home/guy/.local/lib/python3.5/site-packages', '/usr/local/lib/python3.5/dist-packages', '/usr/lib/python3/dist-packages']
-
-for p in additional_path2:
-    sys.path.append(p)
+from sys import path
+path.append('/home/guy/.local/lib/python3.5/site-packages')
 
 import paho.mqtt.client as mqtt
 from threading import Thread
 import datetime
 import os
- 
+
 
 class LogMQTTactivity(Thread):
     def __init__(self, sid=None, mqtt_server="192.168.2.113", username=None,
-                 password=None, topics=None, topic_qos=None, filename='/home/guy/github/SmartHome_SoC/MQTTswitches/MQTT.log'):
+                 password=None, topics=None, topic_qos=None,
+                 filename='/home/guy/MQTTlogger.log'):
         Thread.__init__(self)
         self.sid = sid
         self.mqtt_server = mqtt_server
@@ -86,9 +82,7 @@ class LogMQTTactivity(Thread):
             print(self.msg)
 
 
-
-
-a = LogMQTTactivity(sid="MQTTlogger", topics=['HomePi/Dvir/Windows/All', 'HomePi/Dvir/Messages'], topic_qos=0,
-                    mqtt_server="192.168.2.200", username="guy", password="kupelu9e")
-a.start()
-
+if __name__ == "__main__":
+    a = LogMQTTactivity(sid="MQTTlogger", topics=['HomePi/Dvir/Windows/All', 'HomePi/Dvir/Messages'], topic_qos=0,
+                        mqtt_server="192.168.2.200", username="guy", password="kupelu9e")
+    a.start()

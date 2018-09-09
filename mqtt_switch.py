@@ -2,7 +2,6 @@ from sys import path
 path.append('/home/guy/.local/lib/python3.5/site-packages')
 import paho.mqtt.client as mqtt
 from threading import Thread
-import time
 
 
 class MQTTClient(Thread):

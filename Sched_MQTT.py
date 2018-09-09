@@ -25,7 +25,7 @@ class MQTTRemoteSchedule:
         self.def_sched_down_1, self.def_sched_down_2 = {}, {}
         self.def_sched_up_1, self.def_sched_up_2 = {}, {}
         device_name = master_topic.split('/')[-1] + '_SCHD'
-        self.pub_topics, self.msg_topic = [pub_topics, master_topic + '_SCHD'], msg_topic
+        self.pub_topics, self.msg_topic = [pub_topics, master_topic], msg_topic
         self.broker, self.master_topic = broker, master_topic
         self.active_schedule_flag = True
         self.boot_time = datetime.datetime.now()
@@ -132,16 +132,16 @@ class MQTTRemoteSchedule:
             print(schedule_program)
         print('\n')
 
-    def default_schedules(self):
-        self.def_sched_up_1 = {'start_days': [1, 2, 3, 4, 5], 'start_time': '06:45:00',
-                               'end_days': [1, 2, 3, 4, 5], 'end_time': '06:45:05'}
-        self.def_sched_up_2 = {'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '02:01:10',
-                               'end_days': [1, 2, 3, 4, 5, 6, 7], 'end_time': '02:01:15'}
-
-        self.def_sched_down_1 = {'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '02:00:00',
-                                 'end_days': [1, 2, 3, 4, 5, 6, 7], 'end_time': '02:00:59'}
-        self.def_sched_down_2 = {'start_days': [1, 2, 3, 4, 5], 'start_time': '08:00:00',
-                                 'end_days': [1, 2, 3, 4, 5], 'end_time': '08:00:59'}
+    # def default_schedules(self):
+    #     self.def_sched_up_1 = {'start_days': [1, 2, 3, 4, 5], 'start_time': '06:45:00',
+    #                            'end_days': [1, 2, 3, 4, 5], 'end_time': '06:45:05'}
+    #     self.def_sched_up_2 = {'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '02:01:10',
+    #                            'end_days': [1, 2, 3, 4, 5, 6, 7], 'end_time': '02:01:15'}
+    #
+    #     self.def_sched_down_1 = {'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '02:00:00',
+    #                              'end_days': [1, 2, 3, 4, 5, 6, 7], 'end_time': '02:00:59'}
+    #     self.def_sched_down_2 = {'start_days': [1, 2, 3, 4, 5], 'start_time': '08:00:00',
+    #                              'end_days': [1, 2, 3, 4, 5], 'end_time': '08:00:59'}
 
     def PBit(self):
         self.pub_msg('up')
@@ -150,9 +150,11 @@ class MQTTRemoteSchedule:
         sleep(1)
 
 
-topic_prefix = 'HomePi/Dvir/Windows/'
-Home_Devices = ['pRoomWindow', 'fRoomWindow', 'kRoomWindow']
-Home_Devices = [topic_prefix + device for device in Home_Devices]
-for client in Home_Devices:
-    MQTTRemoteSchedule(broker='192.168.2.200', master_topic=client, pub_topics='HomePi/Dvir/Schedules',
-                       msg_topic='HomePi/Dvir/Messages', username='guy', password='kupelu9e')
+if __name__ == "__main__":
+
+    topic_prefix = 'HomePi/Dvir/Windows/'
+    Home_Devices = ['pRoomWindow', 'fRoomWindow', 'kRoomWindow']
+    Home_Devices = [topic_prefix + device for device in Home_Devices]
+    for client in Home_Devices:
+        MQTTRemoteSchedule(broker='192.168.2.200', master_topic=client, pub_topics='HomePi/Dvir/Schedules',
+                           msg_topic='HomePi/Dvir/Messages', username='guy', password='kupelu9e')
