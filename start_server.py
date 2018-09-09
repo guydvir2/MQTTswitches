@@ -16,7 +16,7 @@ def start_scheduler(server, user, password, msg_topic, pub_topic):
     for client in Home_Devices:
         Sched_MQTT.MQTTRemoteSchedule(broker=server, master_topic=client, pub_topics=pub_topic,
                                       msg_topic=msg_topic, username=user, password=password,
-                                      filename='/home/guy/github/SmartHome_SoC/MQTTswitches/' + client + '.json')
+                                      sched_filename='/home/guy/github/SmartHome_SoC/MQTTswitches/' + client.split('/')[-1] + '.json')
 
 
 # ######################### Parameters ###########################
