@@ -19,34 +19,47 @@ from jReader import SchedReader
 
 
 class MQTTRemoteSchedule:
-    def __init__(self, master_topic, pub_topics, msg_topic, broker='192.168.2.113', qos=0, sched_filename=None,
+    def __init__(self, device_topic, scheds_topic, msg_topic, broker='192.168.2.113', qos=0, sched_filename=None,
                  username=None, password=None):
 
-        self.def_sched_down_1, self.def_sched_down_2 = {}, {}
-        self.def_sched_up_1, self.def_sched_up_2 = {}, {}
-        device_name = master_topic.split('/')[-1] + '_SCHD'
-        self.pub_topics, self.msg_topic = [pub_topics, master_topic], msg_topic
-        self.broker, self.master_topic = broker, master_topic
-        self.active_schedule_flag = True
-        self.boot_time = datetime.datetime.now()
+        self.schedule_up, self.schedule_down = None, None
 
-        # Read schedule file
+        # ## MQTT parameters
+        self.broker = broker
+        client_id = device_topic.split('/')[-1] + '_SCHD'
+        # ##
+
+        # ## Topics
+        # device topic to send command
+        self.device_topic = device_topic
+        # for group of scheds
+        self.scheds_topic = scheds_topic
+        # Outgoing notification messages
+        self.msg_topic = msg_topic
+        # internal msgs to scheduler
+        self.int_topic = self.device_topic + "_SCHD"
+        # ##
+
+        # ## Read schedule file
         if sched_filename is None:
-            sched_filename = master_topic.split('/')[-1] + '.json'
+            sched_filename = device_topic.split('/')[-1] + '.json'
         self.sched_reader = SchedReader(filename=sched_filename)
-        if self.sched_reader.data_from_file["topic"] != self.master_topic:
-            self.sched_reader.update_value('topic', self.master_topic)
+        if self.sched_reader.data_from_file["topic"] != self.device_topic:
+            self.sched_reader.update_value('topic', self.device_topic)
+        # Enabled/disabled schedule - defined inside config file
         self.active_schedule_flag = self.sched_reader.data_from_file["enable"]
-        #
+        # ##
 
-        self.start_mqtt_service(device_name, qos, password=password, username=username)
+        self.start_mqtt_service(client_id, qos, password=password, username=username)
         self.run_schedule()
         self.schedule_report()
+        self.boot_time = datetime.datetime.now()
 
     # MQTT section
-    def start_mqtt_service(self, device_name, qos, password, username):
-        self.mqtt_agent = MQTTClient(sid=device_name, topics=self.pub_topics, topic_qos=qos, host=self.broker,
-                                     password=password, username=username)
+    def start_mqtt_service(self, client_id, qos, password, username):
+        self.mqtt_agent = MQTTClient(sid=client_id, topics=[self.device_topic, self.int_topic],
+                                     last_will_topic=self.msg_topic,
+                                     topic_qos=qos, host=self.broker, password=password, username=username)
         self.mqtt_agent.call_externalf = lambda: self.mqtt_commands(self.mqtt_agent.arrived_msg)
         self.mqtt_agent.start()
         sleep(1)
@@ -62,20 +75,25 @@ class MQTTRemoteSchedule:
 
         elif msg.upper() == msg_text[1] or msg == msg_codes[1]:
             self.active_schedule_flag = False
-            msg = "Schedule set to [%s]" % (self.active_schedule_flag)
+            msg = "Schedule set to [%s]" % self.active_schedule_flag
             self.pub_msg(msg_topic=self.msg_topic, msg=msg)
 
         elif msg.upper() == msg_text[2] or msg == msg_codes[2]:
             self.active_schedule_flag = True
-            msg = "Schedule set to [%s]" % (self.active_schedule_flag)
+            msg = "Schedule set to [%s]" % self.active_schedule_flag
             self.pub_msg(msg_topic=self.msg_topic, msg=msg)
+
+        elif msg.upper() == msg_text[3] or msg == msg_codes[3]:
+            report = self.schedule_report()
+            for line in report:
+                self.pub_msg(msg_topic=self.msg_topic, msg=line[0])
 
     def pub_msg(self, msg, msg_topic=None):
         if msg_topic == None:
-            msg_topic = self.master_topic
+            msg_topic = self.device_topic
         else:
             time_stamp = '[' + str(datetime.datetime.now())[:-4] + ']'
-            msg = '%s [%s][SCHD] %s' % (time_stamp, self.master_topic, msg)
+            msg = '%s [%s][SCHD] %s' % (time_stamp, self.device_topic, msg)
 
         self.mqtt_agent.pub(payload=msg, topic=msg_topic)
 
@@ -84,14 +102,13 @@ class MQTTRemoteSchedule:
         if self.active_schedule_flag is True:
             self.pub_msg(msg)
         else:
-            self.pub_msg(msg_topic=self.msg_topic, msg="Scheduled task- Canceled by User")
+            self.pub_msg(msg_topic=self.msg_topic, msg="Scheduled task- Disabled by User")
 
     # Schedule section
 
     def data_validation(self):
-        if self.sched_reader.data_from_file["topic"] == self.master_topic:
+        if self.sched_reader.data_from_file["topic"] == self.device_topic:
             pass
-            # print("Topic in schedule file- OK")
         else:
             print("wrong topic in schedule file")
 
@@ -116,7 +133,8 @@ class MQTTRemoteSchedule:
             print("Schedule is not enabled. \n Quit.")
 
     def schedule_report(self):
-        print('Topic: [%s]' % (self.master_topic))
+        output = []
+        print('Topic: [%s]' % (self.device_topic))
         for i in range(len(self.sched_reader.data_from_file["schedule_up"])):
             schedule_program = "\t\t[UP   #%d]: Start: %s, %s, End: %s, %s" % \
                                (i, self.sched_reader.data_from_file["schedule_up"][i]["start_days"],
@@ -124,37 +142,29 @@ class MQTTRemoteSchedule:
                                 self.sched_reader.data_from_file["schedule_up"][i]["end_days"],
                                 self.sched_reader.data_from_file["schedule_up"][i]["end_time"])
             print(schedule_program)
+            output.append([schedule_program])
             schedule_program = "\t\t[Down #%d]: Start: %s, %s, End: %s, %s" % \
                                (i, self.sched_reader.data_from_file["schedule_down"][i]["start_days"],
                                 self.sched_reader.data_from_file["schedule_down"][i]["start_time"],
                                 self.sched_reader.data_from_file["schedule_down"][i]["end_days"],
                                 self.sched_reader.data_from_file["schedule_down"][i]["end_time"])
             print(schedule_program)
+            output.append([schedule_program])
         print('\n')
-
-    # def default_schedules(self):
-    #     self.def_sched_up_1 = {'start_days': [1, 2, 3, 4, 5], 'start_time': '06:45:00',
-    #                            'end_days': [1, 2, 3, 4, 5], 'end_time': '06:45:05'}
-    #     self.def_sched_up_2 = {'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '02:01:10',
-    #                            'end_days': [1, 2, 3, 4, 5, 6, 7], 'end_time': '02:01:15'}
+        return output
     #
-    #     self.def_sched_down_1 = {'start_days': [1, 2, 3, 4, 5, 6, 7], 'start_time': '02:00:00',
-    #                              'end_days': [1, 2, 3, 4, 5, 6, 7], 'end_time': '02:00:59'}
-    #     self.def_sched_down_2 = {'start_days': [1, 2, 3, 4, 5], 'start_time': '08:00:00',
-    #                              'end_days': [1, 2, 3, 4, 5], 'end_time': '08:00:59'}
-
-    def PBit(self):
-        self.pub_msg('up')
-        sleep(1)
-        self.pub_msg('down')
-        sleep(1)
+    # def PBit(self):
+    #     self.pub_msg('up')
+    #     sleep(1)
+    #     self.pub_msg('down')
+    #     sleep(1)
 
 
 if __name__ == "__main__":
 
     topic_prefix = 'HomePi/Dvir/Windows/'
-    Home_Devices = ['pRoomWindow', 'fRoomWindow', 'kRoomWindow']
+    Home_Devices = ['p']  # , 'fRoomWindow', 'kRoomWindow']
     Home_Devices = [topic_prefix + device for device in Home_Devices]
     for client in Home_Devices:
-        MQTTRemoteSchedule(broker='192.168.2.200', master_topic=client, pub_topics='HomePi/Dvir/Schedules',
+        MQTTRemoteSchedule(broker='192.168.2.200', device_topic=client, scheds_topic='HomePi/Dvir/Schedules',
                            msg_topic='HomePi/Dvir/Messages', username='guy', password='kupelu9e')

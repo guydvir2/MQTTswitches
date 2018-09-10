@@ -1,4 +1,5 @@
 from sys import path
+
 path.append('/home/guy/.local/lib/python3.5/site-packages')
 
 import paho.mqtt.client as mqtt
@@ -8,8 +9,7 @@ import os
 
 
 class LogMQTTactivity(Thread):
-    def __init__(self, sid=None, mqtt_server="192.168.2.113", username=None,
-                 password=None, topics=None, topic_qos=None,
+    def __init__(self, sid=None, mqtt_server="192.168.2.113", username=None, password=None, topics=None, topic_qos=None,
                  filename='/home/guy/MQTTlogger.log'):
         Thread.__init__(self)
         self.sid = sid
