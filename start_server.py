@@ -19,6 +19,7 @@ def start_scheduler(server, user, password, msg_topic, pub_topic):
                                       sched_filename='/home/guy/github/SmartHome_SoC/MQTTswitches/' + client + '.json')
 
 
+
 # ######################### Parameters ###########################
 BROKER = '192.168.2.200'
 TOPICS2LOG = ['HomePi/Dvir/Windows/All', 'HomePi/Dvir/Messages',
