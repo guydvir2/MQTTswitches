@@ -57,8 +57,7 @@ class MQTTRemoteSchedule:
 
     # MQTT section
     def start_mqtt_service(self, client_id, qos, password, username):
-        self.mqtt_agent = MQTTClient(sid=client_id, topics=[self.device_topic, self.int_topic],
-                                     last_will_topic=self.msg_topic,
+        self.mqtt_agent = MQTTClient(sid=client_id, topics=[self.int_topic], last_will_topic=self.msg_topic,
                                      topic_qos=qos, host=self.broker, password=password, username=username)
         self.mqtt_agent.call_externalf = lambda: self.mqtt_commands(self.mqtt_agent.arrived_msg)
         self.mqtt_agent.start()

@@ -9,8 +9,8 @@ import datetime
 class MQTTClient(Thread):
     def __init__(self, sid=None, host="iot.eclipse.org", username=None, password=None, topics=None,
                  last_will_topic=None, topic_qos=None):
+
         Thread.__init__(self)
-        # MQTTCommands.__init__(self)
         self.sid = sid
         self.host = host
         self.username = username
