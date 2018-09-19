@@ -20,9 +20,10 @@ from jReader import SchedReader
 
 class MQTTRemoteSchedule:
     def __init__(self, device_topic, scheds_topic, msg_topic, broker='192.168.2.113', qos=0, sched_filename=None,
-                 username=None, password=None):
+                 username=None, password=None, device_type="on_off"):
 
-        self.schedule_up, self.schedule_down = None, None
+        self.schedule_up, self.schedule_down, self.schedule = None, None, None
+        self.device_type = device_type
 
         # ## MQTT parameters
         self.broker = broker
@@ -43,7 +44,7 @@ class MQTTRemoteSchedule:
         # ## Read schedule file
         if sched_filename is None:
             sched_filename = device_topic.split('/')[-1] + '.json'
-        self.sched_reader = SchedReader(filename=sched_filename)
+        self.sched_reader = SchedReader(filename=sched_filename, device_type=self.device_type)
         if self.sched_reader.data_from_file["topic"] != self.device_topic:
             self.sched_reader.update_value('topic', self.device_topic)
         # Enabled/disabled schedule - defined inside config file
@@ -51,8 +52,12 @@ class MQTTRemoteSchedule:
         # ##
 
         self.start_mqtt_service(client_id, qos, password=password, username=username)
-        self.run_schedule()
-        self.schedule_report()
+        if self.device_type == "window":
+            self.run_schedule()
+        elif self.device_type == "on_off":
+            self.run_schedule_2()
+
+        # self.schedule_report()
         self.boot_time = datetime.datetime.now()
 
     # MQTT section
@@ -151,19 +156,26 @@ class MQTTRemoteSchedule:
             output.append([schedule_program])
         print('\n')
         return output
-    #
-    # def PBit(self):
-    #     self.pub_msg('up')
-    #     sleep(1)
-    #     self.pub_msg('down')
-    #     sleep(1)
+
+    def run_schedule_2(self):
+        self.data_validation()
+
+        self.schedule = scheduler.RunWeeklySchedule(on_func=lambda: self.pub_validated_commad('on'),
+                                                    off_func=lambda: self.pub_validated_commad('off'))
+
+        if self.sched_reader.data_from_file["enable"] is True:
+            for current_schedule in self.sched_reader.data_from_file["schedule"]:
+                self.schedule.add_weekly_task(new_task=current_schedule)
+            self.schedule.start()
+        else:
+            print("Schedule is not enabled. \n Quit.")
 
 
 if __name__ == "__main__":
 
     topic_prefix = 'HomePi/Dvir/Windows/'
-    Home_Devices = ['p']  # , 'fRoomWindow', 'kRoomWindow']
+    Home_Devices = ['fRoomWindow', 'kRoomWindow']
     Home_Devices = [topic_prefix + device for device in Home_Devices]
     for client in Home_Devices:
         MQTTRemoteSchedule(broker='192.168.2.200', device_topic=client, scheds_topic='HomePi/Dvir/Schedules',
-                           msg_topic='HomePi/Dvir/Messages', username='guy', password='kupelu9e')
+                           msg_topic='HomePi/Dvir/Messages', username='guy', password='kupelu9e', device_type='window')

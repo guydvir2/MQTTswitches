@@ -1,8 +1,11 @@
 from sys import path
 
-path.append('/home/guy/.local/lib/python3.5/site-packages')
+try:
+    path.append('/home/guy/.local/lib/python3.5/site-packages')
+    import paho.mqtt.client as mqtt
+except ImportError:
+    import paho.mqtt.client as mqtt
 
-import paho.mqtt.client as mqtt
 from threading import Thread
 import datetime
 import os
@@ -82,7 +85,47 @@ class LogMQTTactivity(Thread):
             print(self.msg)
 
 
+class ClockSync(Thread):
+    def __init__(self, client_id='clockSync', mqtt_server="192.168.2.200", username="guy", password="kupelu9e",
+                 topics=None, topic_qos=None):
+        Thread.__init__(self)
+
+        self.username = username
+        self.password = password
+        self.client_id = client_id
+        self.topics = topics
+        self.topic_qos = topic_qos
+        self.mqtt_server = mqtt_server
+        self.client, self.arrived_msg = None, None
+
+    def run(self):
+        self.client = mqtt.Client(str(self.client_id))
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+        if self.username is not None and self.password is not None:
+            self.client.username_pw_set(self.username, self.password)
+        self.client.connect(self.mqtt_server, 1883, 60)
+        self.client.loop_forever()
+
+    def on_connect(self, client, obj, flags, rc):
+        print(">> Connecting to MQTT mqtt_server %s: %d" % (self.mqtt_server, rc))
+        for topic in self.topics:
+            print(">> Subscribe topic: %s" % topic)
+            self.client.subscribe(topic, qos=self.topic_qos)
+
+    def on_message(self, client, obj, msg):
+        self.arrived_msg = msg.payload.decode()
+        if self.arrived_msg == "sync":
+            a = datetime.datetime.now()
+            b = "%d,%d,%d,%d,%d,%d" % (a.hour, a.minute, a.second, a.day, a.month, a.year)
+            self.client.publish(topic=self.topics[0], payload=b, qos=self.topic_qos)
+            print(b)
+
+
 if __name__ == "__main__":
-    a = LogMQTTactivity(sid="MQTTlogger", topics=['HomePi/Dvir/Windows/All', 'HomePi/Dvir/Messages'], topic_qos=0,
-                        mqtt_server="192.168.2.200", username="guy", password="kupelu9e")
-    a.start()
+    # a = LogMQTTactivity(sid="MQTTlogger", topics=['HomePi/Dvir/Windows/All', 'HomePi/Dvir/Messages'], topic_qos=0,
+    #                     mqtt_server="192.168.2.200", username="guy", password="kupelu9e")
+    # a.start()
+
+    b = ClockSync(topics=['HomePi/Dvir/Clock'], topic_qos=0)
+    b.start()
