@@ -16,7 +16,7 @@ def start_windows_scheduler(server, user, password, msg_topic, pub_topic):
     for client in Home_Devices:
         Sched_MQTT.MQTTRemoteSchedule(broker=server, device_topic=client, scheds_topic=pub_topic,
                                       msg_topic=msg_topic, username=user, password=password, device_type="window",
-                                      sched_filename='/home/guy/github/SmartHome_SoC/MQTTswitches/' + client.split('/')[
+                                      sched_filename='/home/guy/github/MQTTswitches/' + client.split('/')[
                                           -1] + '.json')
 
 
@@ -27,7 +27,7 @@ def start_lights_scheduler(server, user, password, msg_topic, pub_topic):
     for client in Home_Devices:
         Sched_MQTT.MQTTRemoteSchedule(broker=server, device_topic=client, scheds_topic=pub_topic,
                                       msg_topic=msg_topic, username=user, password=password, device_type="on_off",
-                                      sched_filename='/home/guy/github/SmartHome_SoC/MQTTswitches/' + client.split('/')[
+                                      sched_filename='/home/guy/github/MQTTswitches/' + client.split('/')[
                                           -1] + '.json')
 
 

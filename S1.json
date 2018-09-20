@@ -1,0 +1,28 @@
+{
+    "topic": "HomePi/Dvir/Switches/S1",
+    "enable": true,
+    "schedule": [
+        {
+            "end_days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+		6,
+		7
+            ],
+            "start_days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+		6,
+		7
+            ],
+            "end_time": "07:00:00",
+            "start_time": "21:32:00"
+        }
+    ]
+}
