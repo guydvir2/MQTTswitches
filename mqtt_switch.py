@@ -17,6 +17,7 @@ class MQTTClient(Thread):
         self.password = password
         self.topics = topics
         self.topic_qos = topic_qos
+        self.retain = retain
         self.client, self.arrived_msg = None, None
 
         if last_will_topic is None:
@@ -38,11 +39,10 @@ class MQTTClient(Thread):
     def call_externalf(self):
         pass
 
-    def pub(self, payload, topic=None):
+    def pub(self, payload, topic=None, retain=False):
         if topic is None:
             topic = self.topic
-        self.client.publish(topic, payload, self.topic_qos)
-        # print(">> published: topic:%s msg:%s " % (topic, payload))
+        self.client.publish(topic, payload, self.topic_qos, retain)
 
     def run(self):
         self.client = mqtt.Client(str(self.sid))
