@@ -17,7 +17,6 @@ class MQTTClient(Thread):
         self.password = password
         self.topics = topics
         self.topic_qos = topic_qos
-        self.retain = retain
         self.client, self.arrived_msg = None, None
 
         if last_will_topic is None:
